@@ -7,4 +7,6 @@ import java.util.List;
 public interface AnimalService {
 
     ResponseEntity<List<AnimalDTO>> getAllAnimalsWithFoodAndLegs();
+
+    ResponseEntity<AnimalDTO> getAnimalByName(String name);
 }

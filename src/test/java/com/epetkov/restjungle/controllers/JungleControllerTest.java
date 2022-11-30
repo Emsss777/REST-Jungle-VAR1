@@ -29,6 +29,7 @@ public class JungleControllerTest {
     public static final String ANIMAL = "Ape";
     public static final Integer LEGS = 2;
     public static final String FOOD = "leaves";
+    public static final String FAMILY = "mammal";
 
     @Autowired
     protected WebApplicationContext webApplicationContext;
@@ -52,5 +53,22 @@ public class JungleControllerTest {
                 .andExpect(jsonPath("$[1].name").value(ANIMAL))
                 .andExpect(jsonPath("$[1].food").value(FOOD))
                 .andExpect(jsonPath("$[1].legs").value(LEGS));
+    }
+
+    @Test
+    public void testGetAnimalByName() throws Exception  {
+
+        mockMvc.perform(
+                        get(URLc.J_ANIMALS_URL + URLc.NAME_PARAM, ANIMAL)
+                                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andDo(print())
+                .andExpect(jsonPath("$.id").value(1))
+                .andExpect(jsonPath("$.name").value(ANIMAL))
+                .andExpect(jsonPath("$.legs").value(LEGS))
+                .andExpect(jsonPath("$.foodDTO.id").value(1))
+                .andExpect(jsonPath("$.foodDTO.name").value(FOOD))
+                .andExpect(jsonPath("$.familyDTO.id").value(0))
+                .andExpect(jsonPath("$.familyDTO.name").value(FAMILY));
     }
 }

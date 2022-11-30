@@ -27,4 +27,15 @@ public class JungleController {
 
         return animalService.getAllAnimalsWithFoodAndLegs();
     }
+
+    /**
+     * Returns an Animal found by Name.
+     * @param name ;
+     * @return Object (AnimalDTO) ;
+     */
+    @GetMapping(URLc.NAME_PARAM)
+    public ResponseEntity<AnimalDTO> getAnimalByName(@PathVariable("name") String name) {
+
+        return animalService.getAnimalByName(name);
+    }
 }

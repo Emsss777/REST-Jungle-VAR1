@@ -1,5 +1,6 @@
 package com.epetkov.restjungle.services.impl;
 
+import com.epetkov.restjungle.data.converters.AnimalEntityToAnimalDTO;
 import com.epetkov.restjungle.data.dto.AnimalDTO;
 import com.epetkov.restjungle.data.entities.AnimalEntity;
 import com.epetkov.restjungle.repositories.AnimalRepository;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Service("animalService")
 @Transactional
@@ -20,10 +22,13 @@ public class AnimalServiceImpl implements AnimalService {
     private final Logger LOG = LoggerFactory.getLogger(getClass());
 
     private final AnimalRepository animalRepository;
+    private final AnimalEntityToAnimalDTO animalEntityToAnimalDTO;
 
-    public AnimalServiceImpl(AnimalRepository animalRepository) {
+    public AnimalServiceImpl(AnimalRepository animalRepository,
+                             AnimalEntityToAnimalDTO animalEntityToAnimalDTO) {
 
         this.animalRepository = animalRepository;
+        this.animalEntityToAnimalDTO = animalEntityToAnimalDTO;
     }
 
     @Override
@@ -48,6 +53,23 @@ public class AnimalServiceImpl implements AnimalService {
         
         LOG.info("Number of Animals in the DATABASE: " + animalDTOList.size());
         return new ResponseEntity<>(animalDTOList, HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<AnimalDTO> getAnimalByName(String name) {
+
+        AnimalEntity animalEntity = animalRepository.findAnimalByName(name);
+
+        if (animalEntity != null) {
+
+            AnimalDTO animalDTO = animalEntityToAnimalDTO.convert(animalEntity);
+
+            LOG.info("Animal Found: " + Objects.requireNonNull(animalDTO).getName());
+            return new ResponseEntity<>(animalDTO, HttpStatus.OK);
+        }
+
+        LOG.error("Expected Animal NOT Found!");
+        return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
     }
 
     private List<AnimalEntity> getAnimalEntities() {
