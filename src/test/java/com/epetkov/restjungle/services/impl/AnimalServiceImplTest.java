@@ -1,11 +1,16 @@
 package com.epetkov.restjungle.services.impl;
 
+import com.epetkov.restjungle.data.converters.AnimalDtoToAnimalEntity;
 import com.epetkov.restjungle.data.converters.AnimalEntityToAnimalDTO;
+import com.epetkov.restjungle.data.converters.FamilyEntityToFamilyDTO;
+import com.epetkov.restjungle.data.converters.FoodEntityToFoodDTO;
 import com.epetkov.restjungle.data.dto.AnimalDTO;
 import com.epetkov.restjungle.data.dto.FoodDTO;
 import com.epetkov.restjungle.data.entities.AnimalEntity;
 import com.epetkov.restjungle.data.entities.FoodEntity;
 import com.epetkov.restjungle.repositories.AnimalRepository;
+import com.epetkov.restjungle.repositories.FamilyRepository;
+import com.epetkov.restjungle.repositories.FoodRepository;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -34,14 +39,31 @@ public class AnimalServiceImplTest {
     AnimalRepository animalRepository;
 
     @Mock
+    FoodRepository foodRepository;
+
+    @Mock
+    FamilyRepository familyRepository;
+
+    @Mock
+    FoodEntityToFoodDTO foodEntityToFoodDTO;
+
+    @Mock
     AnimalEntityToAnimalDTO animalEntityToAnimalDTO;
+
+    @Mock
+    FamilyEntityToFamilyDTO familyEntityToFamilyDTO;
+
+    @Mock
+    AnimalDtoToAnimalEntity animalDtoToAnimalEntity;
 
     @Before
     public void setUp() {
 
         MockitoAnnotations.initMocks(this);
 
-        animalService = new AnimalServiceImpl(animalRepository, animalEntityToAnimalDTO);
+        animalService = new AnimalServiceImpl(animalRepository, foodRepository, familyRepository,
+                                              foodEntityToFoodDTO, familyEntityToFamilyDTO,
+                                              animalEntityToAnimalDTO, animalDtoToAnimalEntity);
     }
 
     @Test

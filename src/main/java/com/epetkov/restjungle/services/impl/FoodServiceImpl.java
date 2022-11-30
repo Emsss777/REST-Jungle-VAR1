@@ -53,7 +53,6 @@ public class FoodServiceImpl implements FoodService {
                 LOG.info("Saved Food ID: " + savedFood.getId() + " --> " + "Name: " + savedFood.getName());
                 return new ResponseEntity<>(returnedFood, HttpStatus.OK);
             }
-
         } catch (Exception ex) {
 
             LOG.error("There is Already a Food with that Name!");

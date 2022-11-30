@@ -28,10 +28,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class JungleControllerTest {
 
     public static final String ANIMAL = "Ape";
+    public static final String ANIMAL_NEW = "Koala";
     public static final Integer LEGS = 2;
     public static final String FOOD = "leaves";
     public static final String FOOD_NEW = "nuts";
     public static final String FAMILY = "mammal";
+    public static final String FAMILY_FAIL = "fish";
 
     @Autowired
     protected WebApplicationContext webApplicationContext;
@@ -110,6 +112,36 @@ public class JungleControllerTest {
         mockMvc.perform(
                         post(URLc.J_ANIMALS_URL + URLc.FOOD_URL + URLc.ID_PARAM +
                                 URLc.FOOD_PARAM, 3, FOOD_NEW)
+                                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void testCreateNewAnimalOK() throws Exception {
+
+        mockMvc.perform(
+                        post(URLc.J_ANIMALS_URL + URLc.ID_PARAM + URLc.NAME_PARAM +
+                                        URLc.LEGS_PARAM + URLc.FOOD_PARAM + URLc.FAMILY_PARAM,
+                                7, ANIMAL_NEW, 4, FOOD, FAMILY)
+                                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andDo(print())
+                .andExpect(jsonPath("$.id").value(7))
+                .andExpect(jsonPath("$.name").value(ANIMAL_NEW))
+                .andExpect(jsonPath("$.legs").value(4))
+                .andExpect(jsonPath("$.foodDTO.id").value(1))
+                .andExpect(jsonPath("$.foodDTO.name").value(FOOD))
+                .andExpect(jsonPath("$.familyDTO.id").value(0))
+                .andExpect(jsonPath("$.familyDTO.name").value(FAMILY));
+    }
+
+    @Test
+    public void testCreateNewAnimalFAIL() throws Exception {
+
+        mockMvc.perform(
+                        post(URLc.J_ANIMALS_URL + URLc.ID_PARAM + URLc.NAME_PARAM +
+                                        URLc.LEGS_PARAM + URLc.FOOD_PARAM + URLc.FAMILY_PARAM,
+                                7, ANIMAL_NEW, 4, FOOD, FAMILY_FAIL)
                                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
     }

@@ -65,4 +65,21 @@ public class JungleController {
 
         return foodService.createNewFood(id, food);
     }
+
+    /**
+     * Returns a new type of Animal.
+     * @param id ;
+     * @param name ;
+     * @param legs ;
+     * @param food ;
+     * @param family ;
+     * @return Object (AnimalDTO) ;
+     */
+    @PostMapping(URLc.ID_PARAM + URLc.NAME_PARAM + URLc.LEGS_PARAM + URLc.FOOD_PARAM + URLc.FAMILY_PARAM)
+    public ResponseEntity<AnimalDTO> createNewAnimal(@PathVariable Integer id, @PathVariable String name,
+                                                     @PathVariable Integer legs, @PathVariable String food,
+                                                     @PathVariable String family) {
+
+        return animalService.createNewAnimal(id, name, legs, food, family);
+    }
 }
