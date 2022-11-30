@@ -12,7 +12,6 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.test.context.web.WebAppConfiguration;
 import java.util.Arrays;
 import java.util.List;
 
@@ -21,7 +20,6 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
-@WebAppConfiguration
 public class AnimalServiceImplTest {
 
     public static final Integer ID = 1;
