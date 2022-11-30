@@ -44,7 +44,7 @@ public class FoodServiceImpl implements FoodService {
         try {
 
             // Check if this Food NOT Exists in the DATABASE;
-            FoodEntity confirmFood = foodRepository.findFoodById(Objects.requireNonNull(detachedFood).getId());
+            FoodEntity confirmFood = foodRepository.findOneById(Objects.requireNonNull(detachedFood).getId());
             if (confirmFood == null) {
 
                 FoodEntity savedFood = foodRepository.save(detachedFood);

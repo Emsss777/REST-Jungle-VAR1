@@ -89,7 +89,7 @@ public class AnimalServiceImplTest {
         AnimalEntity animalEntity = new AnimalEntity();
         animalEntity.setName(ANIMAL);
 
-        when(animalRepository.findAnimalByName(ANIMAL)).thenReturn(animalEntity);
+        when(animalRepository.findOneByName(ANIMAL)).thenReturn(animalEntity);
 
         AnimalDTO animalDTO = new AnimalDTO();
         animalDTO.setName(animalEntity.getName());
@@ -99,7 +99,7 @@ public class AnimalServiceImplTest {
         AnimalDTO foundAnimal = animalService.getAnimalByName(ANIMAL).getBody();
 
         assertNotNull(foundAnimal);
-        verify(animalRepository, times(1)).findAnimalByName(anyString());
+        verify(animalRepository, times(1)).findOneByName(anyString());
         verify(animalRepository, never()).findAll();
     }
 
@@ -137,13 +137,13 @@ public class AnimalServiceImplTest {
         animalEntity.setId(ID);
         animalEntity.setName(ANIMAL);
 
-        when(animalRepository.findAnimalByName(ANIMAL)).thenReturn(animalEntity);
+        when(animalRepository.findOneByName(ANIMAL)).thenReturn(animalEntity);
 
-        when(animalRepository.findAnimalById(ID)).thenReturn(animalEntity);
+        when(animalRepository.findOneById(ID)).thenReturn(animalEntity);
 
         animalService.deleteAnimalByName(ANIMAL);
 
-        verify(animalRepository, times(1)).findAnimalByName(anyString());
+        verify(animalRepository, times(1)).findOneByName(anyString());
         verify(animalRepository, times(1)).deleteById(anyInt());
     }
 }

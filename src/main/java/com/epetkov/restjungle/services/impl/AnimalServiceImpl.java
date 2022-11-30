@@ -71,7 +71,7 @@ public class AnimalServiceImpl implements AnimalService {
     @Override
     public ResponseEntity<AnimalDTO> getAnimalByName(String name) {
 
-        AnimalEntity animalEntity = animalRepository.findAnimalByName(name);
+        AnimalEntity animalEntity = animalRepository.findOneByName(name);
         if (animalEntity != null) {
 
             AnimalDTO animalDTO = animalEntityToAnimalDTO.convert(animalEntity);
@@ -113,25 +113,25 @@ public class AnimalServiceImpl implements AnimalService {
                                                      Integer legs, String food, String family) {
 
         // Check if this Food Exists in the DATABASE;
-        FoodEntity confirmFood = foodRepository.findFoodByName(food);
+        FoodEntity confirmFood = foodRepository.findOneByName(food);
         if (confirmFood == null) {
 
             LOG.error("Expected Food NOT Found!");
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
 
-        FoodEntity foundFood = foodRepository.findFoodById(confirmFood.getId());
+        FoodEntity foundFood = foodRepository.findOneById(confirmFood.getId());
         FoodDTO returnedFood = foodEntityToFoodDTO.convert(foundFood);
 
         // Check if this Family Exists in the DATABASE;
-        FamilyEntity confirmFamily = familyRepository.findFamilyByName(family);
+        FamilyEntity confirmFamily = familyRepository.findOneByName(family);
         if (confirmFamily == null) {
 
             LOG.error("Expected Family NOT Found!");
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
 
-        FamilyEntity savedFamily = familyRepository.findFamilyById(confirmFamily.getId());
+        FamilyEntity savedFamily = familyRepository.findOneById(confirmFamily.getId());
         FamilyDTO returnedFamily = familyEntityToFamilyDTO.convert(savedFamily);
 
         AnimalDTO animalDTO = new AnimalDTO();
@@ -144,7 +144,7 @@ public class AnimalServiceImpl implements AnimalService {
         AnimalEntity detachedAnimal = animalDtoToAnimalEntity.convert(animalDTO);
         try {
             // Check if this Animal NOT Exists in the DATABASE;
-            AnimalEntity confirmAnimal = animalRepository.findAnimalById(id);
+            AnimalEntity confirmAnimal = animalRepository.findOneById(id);
             if (confirmAnimal == null) {
 
                 AnimalEntity savedAnimal = animalRepository.save(Objects.requireNonNull(detachedAnimal));
@@ -165,10 +165,10 @@ public class AnimalServiceImpl implements AnimalService {
     @Override
     public ResponseEntity<List<AnimalDTO>> deleteAnimalByName(String name) {
 
-        AnimalEntity foundAnimal = animalRepository.findAnimalByName(name);
+        AnimalEntity foundAnimal = animalRepository.findOneByName(name);
         if (foundAnimal != null) {
 
-            AnimalEntity savedAnimal = animalRepository.findAnimalById(foundAnimal.getId());
+            AnimalEntity savedAnimal = animalRepository.findOneById(foundAnimal.getId());
             animalRepository.deleteById(savedAnimal.getId());
         }
 
