@@ -1,7 +1,9 @@
 package com.epetkov.restjungle.controllers;
 
 import com.epetkov.restjungle.data.dto.AnimalDTO;
+import com.epetkov.restjungle.data.dto.FoodDTO;
 import com.epetkov.restjungle.services.interfaces.AnimalService;
+import com.epetkov.restjungle.services.interfaces.FoodService;
 import com.epetkov.restjungle.utils.URLc;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,10 +14,12 @@ import java.util.List;
 public class JungleController {
 
     private final AnimalService animalService;
+    private final FoodService foodService;
 
-    public JungleController(AnimalService animalService) {
+    public JungleController(AnimalService animalService, FoodService foodService) {
 
         this.animalService = animalService;
+        this.foodService = foodService;
     }
 
     /**
@@ -48,5 +52,17 @@ public class JungleController {
     public ResponseEntity<List<AnimalDTO>> getAnimalsByFoodName(@PathVariable("food") String food) {
 
         return animalService.getAnimalsByFoodName(food);
+    }
+
+    /**
+     * Returns a new type of Food.
+     * @param id ;
+     * @param food ;
+     * @return Object (FoodDTO) ;
+     */
+    @PostMapping(URLc.FOOD_URL + URLc.ID_PARAM + URLc.FOOD_PARAM)
+    public ResponseEntity<FoodDTO> createNewFood(@PathVariable Integer id, @PathVariable String food) {
+
+        return foodService.createNewFood(id, food);
     }
 }

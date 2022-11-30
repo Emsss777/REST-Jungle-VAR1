@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -29,6 +30,7 @@ public class JungleControllerTest {
     public static final String ANIMAL = "Ape";
     public static final Integer LEGS = 2;
     public static final String FOOD = "leaves";
+    public static final String FOOD_NEW = "nuts";
     public static final String FAMILY = "mammal";
 
     @Autowired
@@ -87,5 +89,28 @@ public class JungleControllerTest {
                 .andExpect(jsonPath("$[0].foodDTO.name").value(FOOD))
                 .andExpect(jsonPath("$[0].familyDTO.id").value(0))
                 .andExpect(jsonPath("$[0].familyDTO.name").value(FAMILY));
+    }
+
+    @Test
+    public void testCreateNewFoodOK() throws Exception {
+
+        mockMvc.perform(
+                        post(URLc.J_ANIMALS_URL + URLc.FOOD_URL + URLc.ID_PARAM +
+                                URLc.FOOD_PARAM, 5, FOOD_NEW)
+                                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andDo(print())
+                .andExpect(jsonPath("$.id").value(5))
+                .andExpect(jsonPath("$.name").value(FOOD_NEW));
+    }
+
+    @Test
+    public void testCreateNewFoodFAIL() throws Exception {
+
+        mockMvc.perform(
+                        post(URLc.J_ANIMALS_URL + URLc.FOOD_URL + URLc.ID_PARAM +
+                                URLc.FOOD_PARAM, 3, FOOD_NEW)
+                                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
     }
 }
