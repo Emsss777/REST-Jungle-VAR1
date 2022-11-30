@@ -38,4 +38,15 @@ public class JungleController {
 
         return animalService.getAnimalByName(name);
     }
+
+    /**
+     * Returns a List of Animals found by Food Name.
+     * @param food ;
+     * @return ArrayList (AnimalDTO) ;
+     */
+    @GetMapping(URLc.FOOD_URL + URLc.FOOD_PARAM)
+    public ResponseEntity<List<AnimalDTO>> getAnimalsByFoodName(@PathVariable("food") String food) {
+
+        return animalService.getAnimalsByFoodName(food);
+    }
 }

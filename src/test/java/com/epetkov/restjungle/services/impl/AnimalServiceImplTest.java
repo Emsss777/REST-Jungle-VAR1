@@ -2,6 +2,7 @@ package com.epetkov.restjungle.services.impl;
 
 import com.epetkov.restjungle.data.converters.AnimalEntityToAnimalDTO;
 import com.epetkov.restjungle.data.dto.AnimalDTO;
+import com.epetkov.restjungle.data.dto.FoodDTO;
 import com.epetkov.restjungle.data.entities.AnimalEntity;
 import com.epetkov.restjungle.data.entities.FoodEntity;
 import com.epetkov.restjungle.repositories.AnimalRepository;
@@ -82,5 +83,32 @@ public class AnimalServiceImplTest {
         assertNotNull(foundAnimal);
         verify(animalRepository, times(1)).findAnimalByName(anyString());
         verify(animalRepository, never()).findAll();
+    }
+
+    @Test
+    public void testGetAnimalsByFoodName() {
+
+        FoodEntity foodEntity = new FoodEntity();
+        foodEntity.setName(FOOD);
+
+        AnimalEntity animalEntity = new AnimalEntity();
+        animalEntity.setFood(foodEntity);
+
+        List<AnimalEntity> animals = Arrays.asList(animalEntity, animalEntity);
+
+        when(animalRepository.findAll()).thenReturn(animals);
+
+        FoodDTO foodDTO = new FoodDTO();
+        foodDTO.setName(foodEntity.getName());
+
+        AnimalDTO animalDTO = new AnimalDTO();
+        animalDTO.setFoodDTO(foodDTO);
+
+        when(animalEntityToAnimalDTO.convert(animalEntity)).thenReturn(animalDTO);
+
+        List<AnimalDTO> animalDtoByFoodName = animalService.getAnimalsByFoodName(FOOD).getBody();
+
+        assertNotNull(animalDtoByFoodName);
+        assertEquals(2, animalDtoByFoodName.size());
     }
 }

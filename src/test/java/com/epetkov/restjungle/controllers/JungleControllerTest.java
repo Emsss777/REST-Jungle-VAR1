@@ -71,4 +71,21 @@ public class JungleControllerTest {
                 .andExpect(jsonPath("$.familyDTO.id").value(0))
                 .andExpect(jsonPath("$.familyDTO.name").value(FAMILY));
     }
+
+    @Test
+    public void testGetAnimalsByFoodName() throws Exception  {
+
+        mockMvc.perform(
+                        get(URLc.J_ANIMALS_URL + URLc.FOOD_URL + URLc.FOOD_PARAM, FOOD)
+                                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andDo(print())
+                .andExpect(jsonPath("$[0].id").value(1))
+                .andExpect(jsonPath("$[0].name").value(ANIMAL))
+                .andExpect(jsonPath("$[0].legs").value(2))
+                .andExpect(jsonPath("$[0].foodDTO.id").value(1))
+                .andExpect(jsonPath("$[0].foodDTO.name").value(FOOD))
+                .andExpect(jsonPath("$[0].familyDTO.id").value(0))
+                .andExpect(jsonPath("$[0].familyDTO.name").value(FAMILY));
+    }
 }

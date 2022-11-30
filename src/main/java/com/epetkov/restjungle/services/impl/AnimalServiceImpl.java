@@ -59,7 +59,6 @@ public class AnimalServiceImpl implements AnimalService {
     public ResponseEntity<AnimalDTO> getAnimalByName(String name) {
 
         AnimalEntity animalEntity = animalRepository.findAnimalByName(name);
-
         if (animalEntity != null) {
 
             AnimalDTO animalDTO = animalEntityToAnimalDTO.convert(animalEntity);
@@ -70,6 +69,30 @@ public class AnimalServiceImpl implements AnimalService {
 
         LOG.error("Expected Animal NOT Found!");
         return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+    }
+
+    @Override
+    public ResponseEntity<List<AnimalDTO>> getAnimalsByFoodName(String food) {
+
+        List<AnimalEntity> animalList = getAnimalEntities();
+        if (animalList.isEmpty()) {
+
+            LOG.error("Nо Animals Found in the DATABASE!");
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        }
+
+        List<AnimalDTO> animalDTOList = new ArrayList<>();
+        for (AnimalEntity animalEntity : animalList) {
+
+            if (Objects.equals(animalEntity.getFood().getName(), food)) {
+
+                AnimalDTO animalDTO = animalEntityToAnimalDTO.convert(animalEntity);
+                animalDTOList.add(animalDTO);
+            }
+        }
+
+        LOG.info("Number of Animals Found: " + animalDTOList.size());
+        return new ResponseEntity<>(animalDTOList, HttpStatus.OK);
     }
 
     private List<AnimalEntity> getAnimalEntities() {

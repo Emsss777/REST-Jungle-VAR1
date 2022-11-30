@@ -9,4 +9,6 @@ public interface AnimalService {
     ResponseEntity<List<AnimalDTO>> getAllAnimalsWithFoodAndLegs();
 
     ResponseEntity<AnimalDTO> getAnimalByName(String name);
+
+    ResponseEntity<List<AnimalDTO>> getAnimalsByFoodName(String food);
 }
