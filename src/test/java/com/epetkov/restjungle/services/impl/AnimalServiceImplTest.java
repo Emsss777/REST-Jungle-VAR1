@@ -1,16 +1,11 @@
 package com.epetkov.restjungle.services.impl;
 
-import com.epetkov.restjungle.data.converters.AnimalDtoToAnimalEntity;
-import com.epetkov.restjungle.data.converters.AnimalEntityToAnimalDTO;
-import com.epetkov.restjungle.data.converters.FamilyEntityToFamilyDTO;
-import com.epetkov.restjungle.data.converters.FoodEntityToFoodDTO;
+import com.epetkov.restjungle.data.converters.*;
 import com.epetkov.restjungle.data.dto.AnimalDTO;
 import com.epetkov.restjungle.data.dto.FoodDTO;
 import com.epetkov.restjungle.data.entities.AnimalEntity;
 import com.epetkov.restjungle.data.entities.FoodEntity;
-import com.epetkov.restjungle.repositories.AnimalRepository;
-import com.epetkov.restjungle.repositories.FamilyRepository;
-import com.epetkov.restjungle.repositories.FoodRepository;
+import com.epetkov.restjungle.repositories.*;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -29,6 +24,7 @@ import static org.mockito.Mockito.*;
 @WebAppConfiguration
 public class AnimalServiceImplTest {
 
+    public static final Integer ID = 1;
     public static final String ANIMAL = "Koala";
     public static final Integer LEGS = 4;
     public static final String FOOD = "leaves";
@@ -132,5 +128,22 @@ public class AnimalServiceImplTest {
 
         assertNotNull(animalDtoByFoodName);
         assertEquals(2, animalDtoByFoodName.size());
+    }
+
+    @Test
+    public void testDeleteAnimalByName() {
+
+        AnimalEntity animalEntity = new AnimalEntity();
+        animalEntity.setId(ID);
+        animalEntity.setName(ANIMAL);
+
+        when(animalRepository.findAnimalByName(ANIMAL)).thenReturn(animalEntity);
+
+        when(animalRepository.findAnimalById(ID)).thenReturn(animalEntity);
+
+        animalService.deleteAnimalByName(ANIMAL);
+
+        verify(animalRepository, times(1)).findAnimalByName(anyString());
+        verify(animalRepository, times(1)).deleteById(anyInt());
     }
 }
