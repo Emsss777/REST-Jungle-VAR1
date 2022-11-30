@@ -3,6 +3,7 @@ package com.epetkov.restjungle.controllers;
 import com.epetkov.restjungle.Application;
 import com.epetkov.restjungle.services.interfaces.AnimalService;
 import com.epetkov.restjungle.utils.URLc;
+import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -167,5 +168,25 @@ public class JungleControllerTest {
                 .andExpect(status().isOk());
 
         verify(animalService).deleteAnimalByName(anyString());
+    }
+
+    @Test
+    public void testCountLegsByFoodAndFamilyNames() throws Exception {
+
+        mockMvc.perform(
+                        get(URLc.J_ANIMALS_URL + URLc.FOOD_PARAM + URLc.FAMILY_PARAM,
+                                "food", "family" + URLc.COUNT_LEGS_URL)
+                                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andDo(print())
+                .andExpect(jsonPath("$[0].leaves", Matchers.is(6)))
+                .andExpect(jsonPath("$[0].birdseed", Matchers.is(2)))
+                .andExpect(jsonPath("$[0].insects", Matchers.is(8)))
+                .andExpect(jsonPath("$[0].carrot", Matchers.is(4)))
+                .andExpect(jsonPath("$[0].vermin", Matchers.is(4)))
+                .andExpect(jsonPath("$[1].mammal", Matchers.is(10)))
+                .andExpect(jsonPath("$[1].arthropod", Matchers.is(8)))
+                .andExpect(jsonPath("$[1].reptile", Matchers.is(4)))
+                .andExpect(jsonPath("$[1].birds", Matchers.is(2)));
     }
 }

@@ -1,13 +1,15 @@
 package com.epetkov.restjungle.controllers;
 
+import com.epetkov.restjungle.services.interfaces.CountLegsService;
 import com.epetkov.restjungle.data.dto.AnimalDTO;
 import com.epetkov.restjungle.data.dto.FoodDTO;
 import com.epetkov.restjungle.services.interfaces.AnimalService;
 import com.epetkov.restjungle.services.interfaces.FoodService;
 import com.epetkov.restjungle.utils.URLc;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import java.util.List;
+import java.util.*;
 
 @RequestMapping(URLc.J_ANIMALS_URL)
 @RestController
@@ -15,11 +17,14 @@ public class JungleController {
 
     private final AnimalService animalService;
     private final FoodService foodService;
+    private final CountLegsService countLegsDao;
 
-    public JungleController(AnimalService animalService, FoodService foodService) {
+    public JungleController(AnimalService animalService,
+                            FoodService foodService, CountLegsService countLegsDao) {
 
         this.animalService = animalService;
         this.foodService = foodService;
+        this.countLegsDao = countLegsDao;
     }
 
     /**
@@ -92,5 +97,23 @@ public class JungleController {
     public ResponseEntity<List<AnimalDTO>> deleteAnimalByName(@PathVariable String name) {
 
         return animalService.deleteAnimalByName(name);
+    }
+
+    /**
+     * Returns a number of Legs calculated by Food and Family Names.
+     * @param food ;
+     * @param family ;
+     * @return HashMap ;
+     */
+    @GetMapping(URLc.FOOD_PARAM + URLc.FAMILY_PARAM + URLc.COUNT_LEGS_URL)
+    public ResponseEntity<List<Map<String, Integer>>> countLegsByFoodAndFamilyNames(@PathVariable String food,
+                                                                                    @PathVariable String family) {
+
+        List<Map<String, Integer>> mapList = new ArrayList<>();
+
+        mapList.add(countLegsDao.countLegsByFoodAndFamilyNames(food).getBody());
+        mapList.add(countLegsDao.countLegsByFoodAndFamilyNames(family).getBody());
+
+        return new ResponseEntity<>(mapList, HttpStatus.OK);
     }
 }

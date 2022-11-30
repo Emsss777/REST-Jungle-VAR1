@@ -10,6 +10,7 @@ public final class URLc {
     public static final String LEGS_PARAM = "/{legs}";
     public static final String FOOD_PARAM = "/{food}";
     public static final String FAMILY_PARAM = "/{family}";
+    public static final String COUNT_LEGS_URL = "/count-legs";
 
     public URLc() {
     }
