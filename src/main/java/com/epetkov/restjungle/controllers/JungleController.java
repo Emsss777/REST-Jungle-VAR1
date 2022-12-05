@@ -98,13 +98,13 @@ public class JungleController {
     }
 
     /**
-     * Deletes an Animal by ID and returns a List of the remaining Animals.
+     * Deletes an Animal by Name.
      * @param name ;
-     * @return ArrayList (AnimalDTO) ;
+     * @return Boolean ;
      */
     @ApiOperation(value = "Delete an Animal by Name", notes = "These are some API Notes")
     @DeleteMapping(URLc.NAME_PARAM)
-    public ResponseEntity<List<AnimalDTO>> deleteAnimalByName(@PathVariable String name) {
+    public ResponseEntity<Boolean> deleteAnimalByName(@PathVariable String name) {
 
         return animalService.deleteAnimalByName(name);
     }

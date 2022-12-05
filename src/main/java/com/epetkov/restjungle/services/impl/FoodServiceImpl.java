@@ -61,4 +61,18 @@ public class FoodServiceImpl implements FoodService {
 
         return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
     }
+
+    @Override
+    public ResponseEntity<Boolean> deleteFoodByName(String name) {
+
+        FoodEntity foundFood = foodRepository.findOneByName(name);
+        if (foundFood != null) {
+
+            foodRepository.deleteById(foundFood.getId());
+
+            return new ResponseEntity<>(true, HttpStatus.OK);
+        }
+
+        return new ResponseEntity<>(false, HttpStatus.BAD_REQUEST);
+    }
 }

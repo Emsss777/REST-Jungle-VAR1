@@ -40,6 +40,8 @@ public class AnimalServiceIT {
         assertEquals(LEGS, savedAnimalDTO.getLegs());
         assertEquals(FOOD, savedAnimalDTO.getFoodDTO().getName());
         assertEquals(FAMILY, savedAnimalDTO.getFamilyDTO().getName());
+
+        animalService.deleteAnimalByName(savedAnimalDTO.getName()).getBody();
     }
 
     @Test

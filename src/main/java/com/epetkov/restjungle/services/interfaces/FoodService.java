@@ -6,4 +6,6 @@ import org.springframework.http.ResponseEntity;
 public interface FoodService {
 
     ResponseEntity<FoodDTO> createNewFood(Integer id, String name);
+
+    ResponseEntity<Boolean> deleteFoodByName(String name);
 }
