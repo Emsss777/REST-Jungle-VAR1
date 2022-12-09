@@ -12,6 +12,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.transaction.annotation.Transactional;
+import java.util.Objects;
 
 import static org.junit.Assert.*;
 
@@ -39,7 +40,61 @@ public class FoodFamilyDAOImplTest {
     @Test
     public void testGetFoodByName() {
 
-        // Todo: impl
+        FoodDTO foodDTO = foodDAO.getOneByName("leaves").getBody();
+
+        assertNotNull(foodDTO);
+        assertEquals((Integer) 1, foodDTO.getId());
+        assertEquals("leaves", foodDTO.getName());
+    }
+
+   @Test
+    public void testCreateNewFoodOK() {
+
+        FoodDTO foodDTO = new FoodDTO();
+        foodDTO.setId(5);
+        foodDTO.setName("honey");
+
+        FoodDTO savedFood = foodDAO.createNewFood(foodDTO).getBody();
+
+        assertNotNull(savedFood);
+        assertEquals((Integer) 5, savedFood.getId());
+        assertEquals("honey", savedFood.getName());
+
+       foodDAO.deleteFoodByName(savedFood.getName()).getBody();
+    }
+
+    @Test
+    public void testCreateNewFoodFAIL() {
+
+        FoodDTO foodDTO = new FoodDTO();
+        foodDTO.setId(1);
+        foodDTO.setName("leaves");
+
+        FoodDTO savedFood = foodDAO.createNewFood(foodDTO).getBody();
+
+        assertNull(savedFood);
+    }
+
+    @Test
+    public void testDeleteFoodByNameOK() {
+
+        FoodDTO foodDTO = new FoodDTO();
+        foodDTO.setId(5);
+        foodDTO.setName("honey");
+
+        FoodDTO savedFood = foodDAO.createNewFood(foodDTO).getBody();
+
+        Boolean result = foodDAO.deleteFoodByName(Objects.requireNonNull(savedFood).getName()).getBody();
+
+        assertEquals(Boolean.TRUE, result);
+    }
+
+    @Test
+    public void testDeleteFoodByNameFAIL() {
+
+        Boolean result = foodDAO.deleteFoodByName("mouse").getBody();
+
+        assertEquals(Boolean.FALSE, result);
     }
 
     @Test
@@ -54,6 +109,10 @@ public class FoodFamilyDAOImplTest {
     @Test
     public void testGetFamilyByName() {
 
-        // Todo: impl
+        FamilyDTO familyDTO = familyDAO.getOneByName("mammal").getBody();
+
+        assertNotNull(familyDTO);
+        assertEquals((Integer) 0, familyDTO.getId());
+        assertEquals("mammal", familyDTO.getName());
     }
 }

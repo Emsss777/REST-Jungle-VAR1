@@ -4,6 +4,7 @@ import com.epetkov.restjungle.dao.interfaces.FamilyDAO;
 import com.epetkov.restjungle.dao.mappers.FamilyMapper;
 import com.epetkov.restjungle.data.dto.FamilyDTO;
 import com.epetkov.restjungle.utils.SQLs;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -29,9 +30,7 @@ public class FamilyDAOImpl implements FamilyDAO {
 
             return new ResponseEntity<>(familyDTO, HttpStatus.OK);
 
-        } catch (Exception ex) {
-
-            ex.printStackTrace();
+        } catch (EmptyResultDataAccessException e) {
 
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
@@ -40,8 +39,16 @@ public class FamilyDAOImpl implements FamilyDAO {
     @Override
     public ResponseEntity<FamilyDTO> getOneByName(String name) {
 
-        // Todo: impl
-        return null;
+        try {
+            FamilyDTO familyDTO =
+                    jdbcTemplate.queryForObject(SQLs.SELECT_FAMILY_BY_NAME, getFamilyRowMapper(), name);
+
+            return new ResponseEntity<>(familyDTO, HttpStatus.OK);
+
+        } catch (EmptyResultDataAccessException e) {
+
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        }
     }
 
     private RowMapper<FamilyDTO> getFamilyRowMapper() {

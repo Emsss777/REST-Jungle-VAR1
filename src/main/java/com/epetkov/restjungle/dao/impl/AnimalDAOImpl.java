@@ -5,6 +5,7 @@ import com.epetkov.restjungle.dao.mappers.AnimalMapper;
 import com.epetkov.restjungle.dao.mappers.AnimalFoodLegsMapper;
 import com.epetkov.restjungle.data.dto.AnimalDTO;
 import com.epetkov.restjungle.utils.SQLs;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -35,9 +36,7 @@ public class AnimalDAOImpl implements AnimalDAO {
 
             return new ResponseEntity<>(animalDTOList, HttpStatus.OK);
 
-        } catch (Exception ex) {
-
-            ex.printStackTrace();
+        } catch (EmptyResultDataAccessException e) {
 
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
@@ -59,9 +58,7 @@ public class AnimalDAOImpl implements AnimalDAO {
 
             return new ResponseEntity<>(animalDTO, HttpStatus.OK);
 
-        } catch (Exception ex) {
-
-            ex.printStackTrace();
+        } catch (EmptyResultDataAccessException e) {
 
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
@@ -76,9 +73,7 @@ public class AnimalDAOImpl implements AnimalDAO {
 
             return new ResponseEntity<>(animalDTOList, HttpStatus.OK);
 
-        } catch (Exception ex) {
-
-            ex.printStackTrace();
+        } catch (EmptyResultDataAccessException e) {
 
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
