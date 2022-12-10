@@ -11,6 +11,13 @@ public class FoodDTO {
     @ApiModelProperty(value = "This is the Food Name", required = true)
     private String name;
 
+    public FoodDTO() {
+    }
+
+    public FoodDTO(String name) {
+        this.name = name;
+    }
+
     public Integer getId() {
         return id;
     }

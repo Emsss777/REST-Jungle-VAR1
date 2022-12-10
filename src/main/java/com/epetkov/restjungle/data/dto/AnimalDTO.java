@@ -24,6 +24,17 @@ public class AnimalDTO {
 
     private FamilyDTO familyDTO;
 
+    public AnimalDTO() {
+    }
+
+    public AnimalDTO(Integer id, String name, Integer legs, FoodDTO foodDTO, FamilyDTO familyDTO) {
+        this.id = id;
+        this.name = name;
+        this.legs = legs;
+        this.foodDTO = foodDTO;
+        this.familyDTO = familyDTO;
+    }
+
     public Integer getId() {
         return id;
     }

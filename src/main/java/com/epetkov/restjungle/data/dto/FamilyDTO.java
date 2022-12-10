@@ -11,6 +11,13 @@ public class FamilyDTO {
     @ApiModelProperty(value = "This is the Family Name", required = true)
     private String name;
 
+    public FamilyDTO() {
+    }
+
+    public FamilyDTO(String name) {
+        this.name = name;
+    }
+
     public Integer getId() {
         return id;
     }

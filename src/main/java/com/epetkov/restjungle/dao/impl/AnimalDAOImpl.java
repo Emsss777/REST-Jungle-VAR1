@@ -3,7 +3,7 @@ package com.epetkov.restjungle.dao.impl;
 import com.epetkov.restjungle.dao.interfaces.*;
 import com.epetkov.restjungle.dao.mappers.AnimalMapper;
 import com.epetkov.restjungle.dao.mappers.AnimalFoodLegsMapper;
-import com.epetkov.restjungle.data.dto.AnimalDTO;
+import com.epetkov.restjungle.data.dto.*;
 import com.epetkov.restjungle.utils.SQLs;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
@@ -45,8 +45,16 @@ public class AnimalDAOImpl implements AnimalDAO {
     @Override
     public ResponseEntity<AnimalDTO> getOneByID(Integer id) {
 
-        // Todo: impl
-        return null;
+        try {
+            AnimalDTO animalDTO =
+                    jdbcTemplate.queryForObject(SQLs.SELECT_ANIMAL_BY_ID, getAnimalRowMapper(), id);
+
+            return new ResponseEntity<>(animalDTO, HttpStatus.OK);
+
+        } catch (EmptyResultDataAccessException e) {
+
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        }
     }
 
     @Override
@@ -76,6 +84,69 @@ public class AnimalDAOImpl implements AnimalDAO {
         } catch (EmptyResultDataAccessException e) {
 
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @Override
+    public ResponseEntity<AnimalDTO> createNewAnimal(AnimalDTO animalDTO) {
+
+        String animalName = animalDTO.getName();
+        String foodName = animalDTO.getFoodDTO().getName();
+        String familyName = animalDTO.getFamilyDTO().getName();
+
+        FoodDTO confirmFood = foodDAO.getOneByName(foodName).getBody();
+        if (confirmFood == null) {
+
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        }
+
+        FamilyDTO confirmFamily = familyDAO.getOneByName(familyName).getBody();
+        if (confirmFamily == null) {
+
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        }
+
+        AnimalDTO confirmAnimal = this.getOneByName(animalName).getBody();
+        if (confirmAnimal != null) {
+
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        }
+
+        try {
+            String sqlQuery = String.format(SQLs.INSERT_NEW_ANIMAL, animalDTO.getId(), animalDTO.getName(),
+                                            animalDTO.getLegs(), confirmFood.getId(), confirmFamily.getId());
+
+            jdbcTemplate.execute(sqlQuery);
+
+            AnimalDTO savedAnimal = jdbcTemplate.queryForObject(SQLs.SELECT_LAST_ANIMAL, getAnimalRowMapper());
+
+            return new ResponseEntity<>(savedAnimal, HttpStatus.OK);
+
+        } catch (EmptyResultDataAccessException e) {
+
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @Override
+    public ResponseEntity<Boolean> deleteAnimalByName(String name) {
+
+        AnimalDTO confirmAnimal = this.getOneByName(name).getBody();
+        if (confirmAnimal == null) {
+
+            return new ResponseEntity<>(false, HttpStatus.BAD_REQUEST);
+        }
+
+        try {
+            String sqlQuery = String.format(SQLs.DELETE_ANIMAL_BY_NAME, name);
+
+            jdbcTemplate.execute(sqlQuery);
+
+            return new ResponseEntity<>(true, HttpStatus.OK);
+
+        } catch (EmptyResultDataAccessException e) {
+
+            return new ResponseEntity<>(false, HttpStatus.BAD_REQUEST);
         }
     }
 

@@ -2,7 +2,7 @@ package com.epetkov.restjungle.dao.impl;
 
 import com.epetkov.restjungle.Application;
 import com.epetkov.restjungle.dao.interfaces.AnimalDAO;
-import com.epetkov.restjungle.data.dto.AnimalDTO;
+import com.epetkov.restjungle.data.dto.*;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,8 +11,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
+import java.util.Objects;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.Assert.*;
 
 @RunWith(SpringRunner.class)
@@ -36,7 +36,13 @@ public class AnimalDAOImplTest {
     @Test
     public void testGetAnimalByID() {
 
-        // Todo: impl
+        AnimalDTO animalDTO = animalDAO.getOneByID(2).getBody();
+
+        assertNotNull(animalDTO);
+        assertEquals("Deer", animalDTO.getName());
+        assertEquals((Integer) 4, animalDTO.getLegs());
+        assertEquals("leaves", animalDTO.getFoodDTO().getName());
+        assertEquals("mammal", animalDTO.getFamilyDTO().getName());
     }
 
     @Test
@@ -44,7 +50,7 @@ public class AnimalDAOImplTest {
 
         AnimalDTO animalDTO = animalDAO.getOneByName("Deer").getBody();
 
-        assertThat(animalDTO).isNotNull();
+        assertNotNull(animalDTO);
         assertEquals((Integer) 2, animalDTO.getId());
         assertEquals((Integer) 4, animalDTO.getLegs());
         assertEquals("leaves", animalDTO.getFoodDTO().getName());
@@ -56,7 +62,55 @@ public class AnimalDAOImplTest {
 
         List<AnimalDTO> animalDTOList = animalDAO.getAnimalsByFoodName("leaves").getBody();
 
-        assertThat(animalDTOList).isNotNull();
+        assertNotNull(animalDTOList);
         assertEquals(2, animalDTOList.size());
+    }
+
+    @Test
+    public void testCreateNewAnimalOK() {
+
+        AnimalDTO animalDTO =
+                new AnimalDTO(7, "Donkey", 4, new FoodDTO("leaves"), new FamilyDTO("mammal"));
+
+        AnimalDTO savedAnimal = animalDAO.createNewAnimal(animalDTO).getBody();
+
+        assertNotNull(savedAnimal);
+        assertEquals("Donkey", savedAnimal.getName());
+        assertEquals((Integer) 1, savedAnimal.getFoodDTO().getId());
+        assertEquals((Integer) 0, savedAnimal.getFamilyDTO().getId());
+
+        animalDAO.deleteAnimalByName(Objects.requireNonNull(savedAnimal).getName()).getBody();
+    }
+
+    @Test
+    public void testCreateNewAnimalFAIL() {
+
+        AnimalDTO animalDTO =
+                new AnimalDTO(7, "Deer", 4, new FoodDTO("leaves"), new FamilyDTO("mammal"));
+
+        AnimalDTO savedAnimal = animalDAO.createNewAnimal(animalDTO).getBody();
+
+        assertNull(savedAnimal);
+    }
+
+    @Test
+    public void testDeleteAnimalByNameOK() {
+
+        AnimalDTO animalDTO =
+                new AnimalDTO(7, "Donkey", 4, new FoodDTO("leaves"), new FamilyDTO("mammal"));
+
+        AnimalDTO savedAnimal = animalDAO.createNewAnimal(animalDTO).getBody();
+
+        Boolean result = animalDAO.deleteAnimalByName(Objects.requireNonNull(savedAnimal).getName()).getBody();
+
+        assertEquals(Boolean.TRUE, result);
+    }
+
+    @Test
+    public void testDeleteAnimalByNameFAIL() {
+
+        Boolean result = animalDAO.deleteAnimalByName("Monkey").getBody();
+
+        assertEquals(Boolean.FALSE, result);
     }
 }
