@@ -1,8 +1,7 @@
 package com.epetkov.restjungle.dao.impl;
 
 import com.epetkov.restjungle.dao.interfaces.*;
-import com.epetkov.restjungle.dao.mappers.AnimalMapper;
-import com.epetkov.restjungle.dao.mappers.AnimalFoodLegsMapper;
+import com.epetkov.restjungle.dao.mappers.*;
 import com.epetkov.restjungle.data.dto.*;
 import com.epetkov.restjungle.utils.SQLs;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -11,7 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
-import java.util.List;
+import java.util.*;
 
 @Component
 public class AnimalDAOImpl implements AnimalDAO {
@@ -88,7 +87,7 @@ public class AnimalDAOImpl implements AnimalDAO {
     }
 
     @Override
-    public ResponseEntity<AnimalDTO> createNewAnimal(AnimalDTO animalDTO) {
+    public ResponseEntity<AnimalDTO> createOrUpdateAnimal(AnimalDTO animalDTO, String createOrUpdate) {
 
         String animalName = animalDTO.getName();
         String foodName = animalDTO.getFoodDTO().getName();
@@ -112,11 +111,20 @@ public class AnimalDAOImpl implements AnimalDAO {
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
 
+        String sqlQuery = null;
         try {
-            String sqlQuery = String.format(SQLs.INSERT_NEW_ANIMAL, animalDTO.getId(), animalDTO.getName(),
-                                            animalDTO.getLegs(), confirmFood.getId(), confirmFamily.getId());
+            if (Objects.equals(createOrUpdate, "create")) {
 
-            jdbcTemplate.execute(sqlQuery);
+                sqlQuery = String.format(SQLs.INSERT_NEW_ANIMAL, animalDTO.getId(), animalDTO.getName(),
+                                         animalDTO.getLegs(), confirmFood.getId(), confirmFamily.getId());
+
+            } else if (Objects.equals(createOrUpdate, "update")) {
+
+                sqlQuery = String.format(SQLs.UPDATE_ANIMAL, animalDTO.getName(), animalDTO.getLegs(),
+                                         confirmFood.getId(), confirmFamily.getId(), animalDTO.getId());
+            }
+
+            jdbcTemplate.execute(Objects.requireNonNull(sqlQuery));
 
             AnimalDTO savedAnimal = jdbcTemplate.queryForObject(SQLs.SELECT_LAST_ANIMAL, getAnimalRowMapper());
 
@@ -150,6 +158,31 @@ public class AnimalDAOImpl implements AnimalDAO {
         }
     }
 
+    @Override
+    public ResponseEntity<Map<String, Integer>> countLegsByFoodAndFamilyNames(String name) {
+
+        String sqlQuery = null;
+        if (Objects.equals(name, "food")) {
+
+            sqlQuery = SQLs.COUNT_LEGS_BY_FOOD;
+
+        } else if (Objects.equals(name, "family")) {
+
+            sqlQuery = SQLs.COUNT_LEGS_BY_FAMILY;
+        }
+
+        try {
+            Map<String, Integer> resultMap =
+                    jdbcTemplate.queryForObject(Objects.requireNonNull(sqlQuery), getCountLegsRowMapper());
+
+            return new ResponseEntity<>(resultMap, HttpStatus.OK);
+
+        } catch (EmptyResultDataAccessException e) {
+
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        }
+    }
+
     private RowMapper<AnimalDTO> getAnimalFoodLegsRowMapper() {
 
         return new AnimalFoodLegsMapper(foodDAO);
@@ -158,5 +191,10 @@ public class AnimalDAOImpl implements AnimalDAO {
     private RowMapper<AnimalDTO> getAnimalRowMapper() {
 
         return new AnimalMapper(foodDAO, familyDAO);
+    }
+
+    private static RowMapper<Map<String, Integer>> getCountLegsRowMapper() {
+
+        return new CountLegsMapper();
     }
 }
