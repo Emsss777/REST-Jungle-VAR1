@@ -1,20 +1,17 @@
 package com.epetkov.restjungle.controllers;
 
-import com.epetkov.restjungle.config.SwaggerConfig;
 import com.epetkov.restjungle.services.interfaces.CountLegsService;
 import com.epetkov.restjungle.data.dto.AnimalDTO;
 import com.epetkov.restjungle.data.dto.FoodDTO;
 import com.epetkov.restjungle.services.interfaces.AnimalService;
 import com.epetkov.restjungle.services.interfaces.FoodService;
 import com.epetkov.restjungle.utils.URLc;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.*;
 
-@Api(tags = {SwaggerConfig.JUNGLE_TAG})
 @RequestMapping(URLc.J_ANIMALS_URL)
 @RestController
 public class JungleController {
@@ -35,7 +32,7 @@ public class JungleController {
      * Returns a List of Animals with Food and Legs.
      * @return ArrayList (AnimalDTO) ;
      */
-    @ApiOperation(value = "View List of Animals with Food and Legs", notes = "These are some API Notes")
+    @Operation(summary = "View List of Animals with Food and Legs", description = "These are some API Notes")
     @GetMapping(URLc.FOOD_URL + URLc.LEGS_URL)
     public ResponseEntity<List<AnimalDTO>> getAllAnimalsWithFoodLegs() {
 
@@ -47,7 +44,7 @@ public class JungleController {
      * @param name ;
      * @return Object (AnimalDTO) ;
      */
-    @ApiOperation(value = "Get Animal by Name", notes = "These are some API Notes")
+    @Operation(summary = "Get Animal by Name", description = "These are some API Notes")
     @GetMapping(URLc.NAME_PARAM)
     public ResponseEntity<AnimalDTO> getAnimalByName(@PathVariable("name") String name) {
 
@@ -59,7 +56,7 @@ public class JungleController {
      * @param food ;
      * @return ArrayList (AnimalDTO) ;
      */
-    @ApiOperation(value = "Get Animals by Food Name", notes = "These are some API Notes")
+    @Operation(summary = "Get Animals by Food Name", description = "These are some API Notes")
     @GetMapping(URLc.FOOD_URL + URLc.FOOD_PARAM)
     public ResponseEntity<List<AnimalDTO>> getAnimalsByFoodName(@PathVariable("food") String food) {
 
@@ -72,7 +69,7 @@ public class JungleController {
      * @param food ;
      * @return Object (FoodDTO) ;
      */
-    @ApiOperation(value = "Create a New Type of Food", notes = "These are some API Notes")
+    @Operation(summary = "Create a New Type of Food", description = "These are some API Notes")
     @PostMapping(URLc.FOOD_URL + URLc.ID_PARAM + URLc.FOOD_PARAM)
     public ResponseEntity<FoodDTO> createNewFood(@PathVariable Integer id, @PathVariable String food) {
 
@@ -88,7 +85,7 @@ public class JungleController {
      * @param family ;
      * @return Object (AnimalDTO) ;
      */
-    @ApiOperation(value = "Create a New Type of Animal", notes = "These are some API Notes")
+    @Operation(summary = "Create a New Type of Animal", description = "These are some API Notes")
     @PostMapping(URLc.ID_PARAM + URLc.NAME_PARAM + URLc.LEGS_PARAM + URLc.FOOD_PARAM + URLc.FAMILY_PARAM)
     public ResponseEntity<AnimalDTO> createNewAnimal(@PathVariable Integer id, @PathVariable String name,
                                                      @PathVariable Integer legs, @PathVariable String food,
@@ -102,7 +99,7 @@ public class JungleController {
      * @param name ;
      * @return Boolean ;
      */
-    @ApiOperation(value = "Delete an Animal by Name", notes = "These are some API Notes")
+    @Operation(summary = "Delete an Animal by Name", description = "These are some API Notes")
     @DeleteMapping(URLc.NAME_PARAM)
     public ResponseEntity<Boolean> deleteAnimalByName(@PathVariable String name) {
 
@@ -115,7 +112,7 @@ public class JungleController {
      * @param family ;
      * @return HashMap ;
      */
-    @ApiOperation(value = "Count the Number of Legs by Food and Family Names", notes = "These are some API Notes")
+    @Operation(summary = "Count the Number of Legs by Food and Family Names", description = "These are some API Notes")
     @GetMapping(URLc.FOOD_PARAM + URLc.FAMILY_PARAM + URLc.COUNT_LEGS_URL)
     public ResponseEntity<List<Map<String, Integer>>> countLegsByFoodAndFamilyNames(@PathVariable String food,
                                                                                     @PathVariable String family) {

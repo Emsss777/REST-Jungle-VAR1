@@ -1,14 +1,14 @@
 package com.epetkov.restjungle.data.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class FoodDTO {
 
     private Integer id;
 
-    @ApiModelProperty(value = "This is the Food Name", required = true)
+    @Schema(description = "This is the Food Name", required = true)
     private String name;
 
     public FoodDTO() {

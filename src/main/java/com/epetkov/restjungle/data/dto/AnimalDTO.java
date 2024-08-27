@@ -1,25 +1,25 @@
 package com.epetkov.restjungle.data.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class AnimalDTO {
 
     private Integer id;
 
-    @ApiModelProperty(value = "This is the Animal Name", required = true)
+    @Schema(description = "This is the Animal Name", required = true)
     private String name;
 
-    @ApiModelProperty(value = "This is the Number of Legs", required = true)
+    @Schema(description = "This is the Number of Legs", required = true)
     private Integer legs;
 
-    @ApiModelProperty(value = "This is the Food Name", required = true)
+    @Schema(description = "This is the Food Name", required = true)
     private String food;
 
     private FoodDTO foodDTO;
 
-    @ApiModelProperty(value = "This is the Family Name", required = true)
+    @Schema(description = "This is the Family Name", required = true)
     private String family;
 
     private FamilyDTO familyDTO;
